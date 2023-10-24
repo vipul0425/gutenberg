@@ -147,6 +147,12 @@ module.exports = {
 	output: {
 		devtoolNamespace: 'wp',
 		filename: './build/[name]/index.min.js',
+		chunkFilename: ( { chunk } ) => {
+			if ( chunk.runtime === 'block-library' ) {
+				return './build/block-library/blocks/[name].min.js';
+			}
+			return './build/' + chunk.runtime + '/[name].min.js';
+		},
 		path: join( __dirname, '..', '..' ),
 		devtoolModuleFilenameTemplate: ( info ) => {
 			if ( info.resourcePath.includes( '/@wordpress/' ) ) {
@@ -155,6 +161,14 @@ module.exports = {
 				return `../../packages/${ resourcePath }`;
 			}
 			return `webpack://${ info.namespace }/${ info.resourcePath }`;
+		},
+	},
+	optimization: {
+		splitChunks: {
+			cacheGroups: {
+				default: false,
+				defaultVendors: false,
+			},
 		},
 	},
 	plugins: [

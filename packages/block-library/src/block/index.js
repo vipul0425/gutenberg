@@ -6,17 +6,20 @@ import { symbol as icon } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
+import lazyLoad from '../utils/lazy-load';
 import initBlock from '../utils/init-block';
 import metadata from './block.json';
-import editV1 from './v1/edit';
-import editV2 from './edit';
 
 const { name } = metadata;
 
 export { metadata, name };
 
 export const settings = {
-	edit: window.__experimentalPatternPartialSyncing ? editV2 : editV1,
+	edit: lazyLoad( () =>
+		window.__experimentalPatternPartialSyncing
+			? import( /* webpackChunkName: "block/editor-v2" */ './edit' )
+			: import( /* webpackChunkName: "block/editor-v1" */ './v1/edit' )
+	),
 	icon,
 };
 
