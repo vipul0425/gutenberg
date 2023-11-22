@@ -12,6 +12,7 @@ import { store as preferencesStore } from '@wordpress/preferences';
  */
 import { store as editSiteStore } from '../../store';
 import { unlock } from '../../lock-unlock';
+import BlockPreview from '../block-preview';
 
 const { useBlockEditorSettings } = unlock( editorPrivateApis );
 
@@ -149,6 +150,8 @@ export function useSpecificEditorSettings() {
 			hasFixedToolbar,
 			keepCaretInsideBlock,
 			defaultRenderingMode,
+
+			blockPreview: BlockPreview,
 
 			// I wonder if they should be set in the post editor too
 			__experimentalArchiveTitleTypeLabel: archiveLabels.archiveTypeLabel,
