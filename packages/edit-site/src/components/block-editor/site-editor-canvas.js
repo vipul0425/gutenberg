@@ -25,6 +25,7 @@ import {
 } from '../../utils/constants';
 import { unlock } from '../../lock-unlock';
 import PageContentFocusNotifications from '../page-content-focus-notifications';
+import BlockPreview from '../block-preview';
 
 export default function SiteEditorCanvas() {
 	const { clearSelectedBlock } = useDispatch( blockEditorStore );
@@ -93,7 +94,10 @@ export default function SiteEditorCanvas() {
 							>
 								<EditorCanvas
 									enableResizing={ enableResizing }
-									settings={ settings }
+									settings={ {
+										...settings,
+										blockPreview: BlockPreview,
+									} }
 									contentRef={ contentRef }
 								>
 									{ resizeObserver }
