@@ -35,6 +35,7 @@ import {
 	ToggleControl,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+	__experimentalHStack as HStack,
 	Button,
 	Spinner,
 	Notice,
@@ -567,8 +568,12 @@ function Navigation( {
 								</div>
 							</>
 						) }
-						<h3>{ __( 'Overlay Menu' ) }</h3>
-						<EditOverlayButton navRef={ ref } />
+						<HStack className="wp-block-navigation__menu-inspector-controls__overlay-menu">
+							<h3 className="wp-block-navigation__menu-inspector-controls__overlay-menu-heading">
+								{ __( 'Overlay Menu' ) }
+							</h3>
+							<EditOverlayButton navRef={ ref } />
+						</HStack>
 						<ToggleGroupControl
 							__nextHasNoMarginBottom
 							label={ __( 'Configure overlay menu' ) }
