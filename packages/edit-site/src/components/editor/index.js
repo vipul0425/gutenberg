@@ -185,7 +185,6 @@ export default function Editor( { listViewToggleElement, isLoading } ) {
 	);
 
 	const settings = useSpecificEditorSettings();
-
 	const isReady =
 		! isLoading &&
 		( ( postWithTemplate && !! contextPost && !! editedPost ) ||
