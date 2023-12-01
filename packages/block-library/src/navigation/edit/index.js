@@ -127,7 +127,9 @@ function Navigation( {
 
 	const blockEditingMode = useBlockEditingMode();
 
-	const hideOverlayControls = useIsWithinOverlay();
+	const isInsideOverlay = useIsWithinOverlay();
+
+	const showOverlayControls = ! isInsideOverlay;
 
 	const customOverlay = useCustomOverlay( ref );
 	const goToOverlayEditor = useGoToOverlayEditor();
@@ -551,7 +553,7 @@ function Navigation( {
 			<InspectorControls>
 				{ hasSubmenuIndicatorSetting && (
 					<PanelBody title={ __( 'Display' ) }>
-						{ isResponsive && (
+						{ isResponsive && showOverlayControls && (
 							<>
 								<Button
 									className={ overlayMenuPreviewClasses }
@@ -590,7 +592,7 @@ function Navigation( {
 							</>
 						) }
 
-						{ ! hideOverlayControls && (
+						{ showOverlayControls && (
 							<>
 								<HStack className="wp-block-navigation__menu-inspector-controls__overlay-menu">
 									<h3 className="wp-block-navigation__menu-inspector-controls__overlay-menu-heading">
