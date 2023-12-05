@@ -7,7 +7,6 @@ import classnames from 'classnames';
  */
 import { useSelect } from '@wordpress/data';
 import { useViewportMatch, useResizeObserver } from '@wordpress/compose';
-import { useEntityProp } from '@wordpress/core-data';
 
 /**
  * Internal dependencies
@@ -23,11 +22,7 @@ import {
 	NAVIGATION_POST_TYPE,
 } from '../../utils/constants';
 import { unlock } from '../../lock-unlock';
-
-function useIsNavigationOverlay() {
-	const [ area ] = useEntityProp( 'postType', 'wp_template_part', 'area' );
-	return area === 'navigation-overlay';
-}
+import useIsNavigationOverlay from './use-is-navigation-overlay';
 
 export default function SiteEditorCanvas() {
 	const { templateType, isFocusMode, isViewMode } = useSelect( ( select ) => {
