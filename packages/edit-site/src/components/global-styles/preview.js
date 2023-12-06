@@ -155,10 +155,7 @@ const StylesPreview = ( { label, isFocused, withHoverView } ) => {
 									} }
 									animate={ { scale: 1, opacity: 1 } }
 									initial={ { scale: 0.1, opacity: 0 } }
-									transition={ {
-										delay: 0.3,
-										type: 'tween',
-									} }
+									transition={ { delay: 0.3, type: 'tween' } }
 								>
 									Aa
 								</motion.div>
