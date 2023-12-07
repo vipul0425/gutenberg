@@ -8,7 +8,7 @@ import {
 	__experimentalToolsPanelItem as ToolsPanelItem,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useCallback, useMemo } from '@wordpress/element';
+import { useCallback } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -23,7 +23,6 @@ import TextDecorationControl from '../text-decoration-control';
 import WritingModeControl from '../writing-mode-control';
 import { getValueFromVariable } from './utils';
 import { setImmutably, uniqByProperty } from '../../utils/object';
-import { use } from '@wordpress/data';
 
 const MIN_TEXT_COLUMNS = 1;
 const MAX_TEXT_COLUMNS = 6;
@@ -139,22 +138,6 @@ const DEFAULT_CONTROLS = {
 	textColumns: true,
 };
 
-function useMergedFontSizes( settings ) {
-	return useMemo( () => {
-		return uniqByProperty(
-			mergeOrigins( {
-				default:
-					settings?.typography?.defaultFontSizes !== false
-						? settings?.typography?.fontSizes?.default
-						: undefined,
-				theme: settings?.typography?.fontSizes?.theme,
-				custom: settings?.typography?.fontSizes?.custom,
-			} ),
-			'slug'
-		);
-	}, [ settings ] );
-}
-
 export default function TypographyPanel( {
 	as: Wrapper = TypographyToolsPanel,
 	value,
@@ -192,8 +175,17 @@ export default function TypographyPanel( {
 	// Font Size
 	const hasFontSizeEnabled = useHasFontSizeControl( settings );
 	const disableCustomFontSizes = ! settings?.typography?.customFontSize;
-	const fontSizes = useMergedFontSizes( settings );
-
+	const mergedFontSizes = uniqByProperty(
+		mergeOrigins( {
+			default:
+				settings?.typography?.defaultFontSizes !== false
+					? settings?.typography?.fontSizes?.default
+					: undefined,
+			theme: settings?.typography?.fontSizes?.theme,
+			custom: settings?.typography?.fontSizes?.custom,
+		} ),
+		'slug'
+	);
 	const fontSize = decodeValue( inheritedValue?.typography?.fontSize );
 	const setFontSize = ( newValue, metadata ) => {
 		const actualValue = !! metadata?.slug
@@ -375,7 +367,7 @@ export default function TypographyPanel( {
 					<FontSizePicker
 						value={ fontSize }
 						onChange={ setFontSize }
-						fontSizes={ fontSizes }
+						fontSizes={ mergedFontSizes }
 						disableCustomFontSizes={ disableCustomFontSizes }
 						withReset={ false }
 						withSlider
