@@ -302,6 +302,7 @@ function ListViewBlock( {
 	return (
 		<ListViewLeaf
 			className={ classes }
+			isDragged={ isDragged }
 			onKeyDown={ onKeyDown }
 			onMouseEnter={ onMouseEnter }
 			onMouseLeave={ onMouseLeave }
