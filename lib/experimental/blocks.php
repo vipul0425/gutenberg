@@ -257,7 +257,10 @@ function add_default_navigation_overlay_template_part( $block_template, $id, $te
 
 	// The content is the default Navigation Overlay template part. This will only be used
 	// if the Theme does not provide a template part for the Navigation Overlay.
-	$template->content = file_get_contents( __DIR__ . '/navigation-overlay.html' );
+	// PHP is used here to allow for translation of the default template part.
+	ob_start();
+	include __DIR__ . '/navigation-overlay.php';
+	$template->content = ob_get_clean();
 
 	return $template;
 }
