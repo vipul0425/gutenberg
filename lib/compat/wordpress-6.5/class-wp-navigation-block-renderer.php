@@ -515,10 +515,6 @@ class WP_Navigation_Block_Renderer {
 
 
 	private static function get_custom_overlay_blocks_html( $attributes ) {
-		if ( empty( $attributes['ref'] ) ) {
-			return '';
-		}
-
 		$theme                = get_stylesheet();
 		$custom_overlay_id    = $theme . '//' . 'navigation-overlay';
 		$custom_overlay_query = new WP_Query(
@@ -538,7 +534,7 @@ class WP_Navigation_Block_Renderer {
 				'lazy_load_term_meta' => false, // Do not lazy load term meta, as template parts only have one term.
 			)
 		);
-		$custom_overlay_post  = $custom_overlay_query->have_posts() ? $custom_overlay_query->next_post() : null;
+		$custom_overlay_post = $custom_overlay_query->have_posts() ? $custom_overlay_query->next_post() : null;
 
 		if ( empty( $custom_overlay_post ) ) {
 			// Get from the theme
@@ -552,7 +548,9 @@ class WP_Navigation_Block_Renderer {
 				foreach( parse_blocks( $content ) as $block ) {
 					if ( 'core/navigation' === $block['blockName'] ) {
 						$block['attrs']['overlayMenu'] = "never";
-						$block['attrs']['ref'] = $attributes['ref'];
+						if ( ! empty( $block['attrs']['ref'] ) && empty( $attributes['ref'] ) ) {
+							$block['attrs']['ref'] = $attributes['ref'];
+						}
 					}
 					$blocks[] = $block;
 				}
