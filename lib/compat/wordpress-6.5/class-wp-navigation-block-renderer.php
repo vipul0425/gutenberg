@@ -515,18 +515,17 @@ class WP_Navigation_Block_Renderer {
 
 
 	private static function get_custom_overlay_blocks_html( $attributes ) {
-
 		if ( empty( $attributes['ref'] ) ) {
 			return '';
 		}
 
 		$theme                = get_stylesheet();
-		$custom_overlay_id    = $theme . '//' . 'navigation-overlay-' . $attributes['ref'];
+		$custom_overlay_id    = $theme . '//' . 'navigation-overlay';
 		$custom_overlay_query = new WP_Query(
 			array(
 				'post_type'           => 'wp_template_part',
 				'post_status'         => 'publish',
-				'post_name__in'       => array( 'navigation-overlay-' . $attributes['ref'] ),
+				'post_name__in'       => array( 'navigation-overlay' ),
 				'tax_query'           => array(
 					array(
 						'taxonomy' => 'wp_theme',
@@ -542,10 +541,32 @@ class WP_Navigation_Block_Renderer {
 		$custom_overlay_post  = $custom_overlay_query->have_posts() ? $custom_overlay_query->next_post() : null;
 
 		if ( empty( $custom_overlay_post ) ) {
+			// Get from the theme
+			$overlay_template_part = get_block_templates(
+				array( 'slug__in' => array( 'navigation-overlay' ) ),
+				'wp_template_part'
+			)[0];
+			if ( $overlay_template_part ) {
+				$content = $overlay_template_part->content;
+				$blocks = [];
+				foreach( parse_blocks( $content ) as $block ) {
+					if ( 'core/navigation' === $block['blockName'] ) {
+						$block['attrs']['overlayMenu'] = "never";
+						$block['attrs']['ref'] = $attributes['ref'];
+					}
+					$blocks[] = $block;
+				}
+				$content = serialize_blocks( $blocks );
+			}
+		} else {
+			$content = $custom_overlay_post->post_content;
+		}
+
+		if ( empty( $content ) ) {
 			return '';
 		}
 
-		return do_blocks( $custom_overlay_post->post_content );
+		return do_blocks( $content );
 	}
 
 	/**
