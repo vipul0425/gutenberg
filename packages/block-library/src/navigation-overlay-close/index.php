@@ -17,7 +17,7 @@ function render_block_core_navigation_overlay_close( $attributes ) {
 				// This directive is duplicated in the Navigation Block itself.
 				// See WP_Navigation_Block_Renderer::get_responsive_container_markup().
 				// Changes to this directive should be reflected there as well.
-				'data-wp-on--click' => 'actions.core.navigation.closeMenuOnClick',
+				'data-wp-on--click' => 'actions.closeMenuOnClick',
 				'aria-label'        => $hasIcon ? __( 'Close menu' ) : false,
 			)
 		)

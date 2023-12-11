@@ -542,12 +542,12 @@ class WP_Navigation_Block_Renderer {
 
 		if ( empty( $custom_overlay_post ) ) {
 			// Get from the theme
-			$overlay_template_part = get_block_templates(
+			$overlay_template_parts = get_block_templates(
 				array( 'slug__in' => array( 'navigation-overlay' ) ),
 				'wp_template_part'
-			)[0];
-			if ( $overlay_template_part ) {
-				$content = $overlay_template_part->content;
+			);
+			if ( $overlay_template_parts ) {
+				$content = $overlay_template_parts[0]->content;
 				$blocks = [];
 				foreach( parse_blocks( $content ) as $block ) {
 					if ( 'core/navigation' === $block['blockName'] ) {
