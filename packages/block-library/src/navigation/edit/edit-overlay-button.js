@@ -108,7 +108,7 @@ export default function EditOverlayButton( { navRef } ) {
 			'postType',
 			'wp_template_part',
 			{
-				slug: `${ baseOverlay?.slug }-${ navRef }`,
+				slug: `${ baseOverlay?.slug }`,
 				title: `Navigation Overlay for ${ navTitle }`,
 				content: serialize( overlayBlocks ),
 				area: 'navigation-overlay',

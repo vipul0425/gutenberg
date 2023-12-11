@@ -544,21 +544,25 @@ class WP_Navigation_Block_Renderer {
 			);
 			if ( $overlay_template_parts ) {
 				$content = $overlay_template_parts[0]->content;
-				$blocks = [];
-				foreach( parse_blocks( $content ) as $block ) {
-					if ( 'core/navigation' === $block['blockName'] ) {
-						$block['attrs']['overlayMenu'] = "never";
-						if ( ! empty( $block['attrs']['ref'] ) && empty( $attributes['ref'] ) ) {
-							$block['attrs']['ref'] = $attributes['ref'];
-						}
-					}
-					$blocks[] = $block;
-				}
-				$content = serialize_blocks( $blocks );
 			}
 		} else {
 			$content = $custom_overlay_post->post_content;
 		}
+
+
+		// Update the ref on the block
+		// if it doesn't have one, and turn off the overlay.
+		$blocks = [];
+		foreach( parse_blocks( $content ) as $block ) {
+			if ( 'core/navigation' === $block['blockName'] ) {
+				$block['attrs']['overlayMenu'] = "never";
+				if ( empty( $block['attrs']['ref'] ) && ! empty( $attributes['ref'] ) ) {
+					$block['attrs']['ref'] = $attributes['ref'];
+				}
+			}
+			$blocks[] = $block;
+		}
+		$content = serialize_blocks( $blocks );
 
 		if ( empty( $content ) ) {
 			return '';
