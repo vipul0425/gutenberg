@@ -598,7 +598,9 @@ function Navigation( {
 									<h3 className="wp-block-navigation__menu-inspector-controls__overlay-menu-heading">
 										{ __( 'Overlay Menu' ) }
 									</h3>
-									<EditOverlayButton navRef={ ref } />
+									{ isResponsive && (
+										<EditOverlayButton navRef={ ref } />
+									) }
 								</HStack>
 								<ToggleGroupControl
 									__nextHasNoMarginBottom
