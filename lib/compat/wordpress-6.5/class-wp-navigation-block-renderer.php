@@ -549,6 +549,9 @@ class WP_Navigation_Block_Renderer {
 			$content = $custom_overlay_post->post_content;
 		}
 
+		if ( empty( $content ) ) {
+			return '';
+		}
 
 		// Update the ref on the block
 		// if it doesn't have one, and turn off the overlay.
@@ -563,11 +566,6 @@ class WP_Navigation_Block_Renderer {
 			$blocks[] = $block;
 		}
 		$content = serialize_blocks( $blocks );
-
-		if ( empty( $content ) ) {
-			return '';
-		}
-
 		return do_blocks( $content );
 	}
 
