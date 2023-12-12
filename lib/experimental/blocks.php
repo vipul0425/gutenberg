@@ -242,8 +242,8 @@ function add_default_navigation_overlay_template_part( $block_template, $id, $te
 	$template = new WP_Block_Template();
 
 	// TODO: should we provide "$theme" here at all as this is a "Core" template.
-	$template->id             = $theme . '//' . 'navigation-overlay';
-	$template->theme          = $theme;
+	$template->id             = 'core//' . 'navigation-overlay';
+	$template->theme          = null;
 	$template->slug           = 'navigation-overlay';
 	$template->source         = 'custom';
 	$template->type           = 'wp_template_part';
