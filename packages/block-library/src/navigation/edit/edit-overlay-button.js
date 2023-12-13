@@ -115,8 +115,7 @@ export default function EditOverlayButton( { navRef } ) {
 			{ throwOnError: true }
 		);
 	}
-
-	if ( ! history && ! baseOverlay && ! overlay ) {
+	if ( ! history || ( ! baseOverlay && ! overlay ) ) {
 		return null;
 	}
 
