@@ -30,7 +30,7 @@ export default function EditOverlayButton( { navRef } ) {
 			? select( coreStore ).getEntityRecord(
 					'postType',
 					'wp_template_part',
-					`core//navigation-overlay`
+					`${ themeSlug }//navigation-overlay`
 			  )
 			: null;
 
