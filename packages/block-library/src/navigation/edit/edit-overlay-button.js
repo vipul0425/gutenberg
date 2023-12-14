@@ -17,25 +17,17 @@ import useOverlay from './use-overlay';
 const { useHistory } = unlock( routerPrivateApis );
 
 export default function EditOverlayButton( { navRef } ) {
-	// Get the overlay with the slug `navigation-overlay`.
+	// // Get the overlay with the slug `navigation-overlay`.
 	const overlay = useOverlay();
 
 	// Get the default template part that core provides.
-	const { baseOverlay } = useSelect( ( select ) => {
-		const themeSlug = select( coreStore ).getCurrentTheme()?.stylesheet;
-
-		// Try for overlay provided by Theme (falling back to default
-		// provided by Core).
-		const _baseOverlay = themeSlug
-			? select( coreStore ).getEntityRecord(
-					'postType',
-					'wp_template_part',
-					`${ themeSlug }//navigation-overlay`
-			  )
-			: null;
-
+	const { coreOverlay } = useSelect( ( select ) => {
 		return {
-			baseOverlay: _baseOverlay,
+			coreOverlay: select( coreStore ).getEntityRecord(
+				'postType',
+				'wp_template_part',
+				`core//navigation-overlay`
+			),
 		};
 	}, [] );
 
@@ -65,26 +57,24 @@ export default function EditOverlayButton( { navRef } ) {
 
 	async function handleEditOverlay( event ) {
 		event.preventDefault();
-		// Block is associated to a custom overlay template part
-		// by template part ID.
 
-		// User has customized the default global overlay template part.
-
-		// Theme provides an overlay template part.
-
-		// If there is already an overlay
-		// then go to the editor for that overlay template part.
+		// There may already be an overlay with the slug `navigation-overlay`.
+		// This might be a user created one, or one provided by the theme.
+		// If so, then go directly to the editor for that overlay template part.
 		if ( overlay ) {
 			goToOverlayEditor( overlay.id );
 			return;
 		}
 
-		// No overlay - create one from base template.
+		// If there is not overlay then create one using the base template part
+		// provided by Core.
 		// TODO: catch and handle errors.
 		const overlayBlocks = buildOverlayBlocks(
-			baseOverlay.content.raw,
+			coreOverlay.content.raw,
 			navRef
 		);
+
+		// The new overlay should use the current Theme's slug.
 		const newOverlay = await createOverlay( overlayBlocks );
 
 		goToOverlayEditor( newOverlay?.id );
@@ -107,7 +97,7 @@ export default function EditOverlayButton( { navRef } ) {
 			'postType',
 			'wp_template_part',
 			{
-				slug: `${ baseOverlay?.slug }`,
+				slug: `navigation-overlay`, // `theme//` prefix is appended automatically.
 				title: `Navigation Overlay`,
 				content: serialize( overlayBlocks ),
 				area: 'navigation-overlay',
@@ -115,7 +105,7 @@ export default function EditOverlayButton( { navRef } ) {
 			{ throwOnError: true }
 		);
 	}
-	if ( ! history || ( ! baseOverlay && ! overlay ) ) {
+	if ( ! history || ( ! coreOverlay && ! overlay ) ) {
 		return null;
 	}
 
