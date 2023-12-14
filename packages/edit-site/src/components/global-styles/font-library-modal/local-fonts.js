@@ -12,7 +12,7 @@ import {
 	Notice,
 	FlexItem,
 } from '@wordpress/components';
-import { useContext, useState, useEffect } from '@wordpress/element';
+import { useContext, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -24,8 +24,9 @@ import makeFamiliesFromFaces from './utils/make-families-from-faces';
 import { loadFontFaceInBrowser } from './utils';
 import { getNoticeFromInstallResponse } from './utils/get-notice-from-response';
 
-function LocalFonts() {
-	const { installFonts } = useContext( FontLibraryContext );
+function LocalFonts( { onUpload } ) {
+	const { installFonts, handleSetLibraryFontSelected } =
+		useContext( FontLibraryContext );
 	const [ notice, setNotice ] = useState( null );
 	const supportedFormats =
 		ALLOWED_FILE_EXTENSIONS.slice( 0, -1 )
@@ -39,16 +40,6 @@ function LocalFonts() {
 	const onFilesUpload = ( event ) => {
 		handleFilesUpload( event.target.files );
 	};
-
-	// Reset notice after 5 seconds
-	useEffect( () => {
-		if ( notice ) {
-			const timeout = setTimeout( () => {
-				setNotice( null );
-			}, 5000 );
-			return () => clearTimeout( timeout );
-		}
-	}, [ notice ] );
 
 	/**
 	 * Filters the selected files to only allow the ones with the allowed extensions
@@ -148,8 +139,16 @@ function LocalFonts() {
 	const handleInstall = async ( fontFaces ) => {
 		const fontFamilies = makeFamiliesFromFaces( fontFaces );
 		const response = await installFonts( fontFamilies );
-		const installNotice = getNoticeFromInstallResponse( response );
-		setNotice( installNotice );
+		if ( response.successes.length ) {
+			const font = response.successes[ 0 ];
+			handleSetLibraryFontSelected( font );
+			if ( onUpload ) {
+				onUpload();
+			}
+		} else {
+			const installNotice = getNoticeFromInstallResponse( response );
+			setNotice( installNotice );
+		}
 	};
 
 	return (
@@ -176,9 +175,9 @@ function LocalFonts() {
 					<FlexItem>
 						<Spacer margin={ 2 } />
 						<Notice
-							isDismissible={ false }
 							status={ notice.type }
 							className="font-library-modal__upload-area__notice"
+							onRemove={ () => setNotice( null ) }
 						>
 							{ notice.message }
 						</Notice>

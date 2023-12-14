@@ -52,7 +52,7 @@ function InstalledFonts() {
 		const response = await uninstallFont( libraryFontSelected );
 		const uninstallNotice = getNoticeFromUninstallResponse( response );
 		setNotice( uninstallNotice );
-		// If the font was succesfully uninstalled it is unselected
+		// If the font was successfully uninstalled it is unselected
 		if ( ! response?.errors?.length ) {
 			handleUnselectFont();
 		}
@@ -81,16 +81,6 @@ function InstalledFonts() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [] );
 
-	// Reset notice after 5 seconds
-	useEffect( () => {
-		if ( notice ) {
-			const timeout = setTimeout( () => {
-				setNotice( null );
-			}, 5000 );
-			return () => clearTimeout( timeout );
-		}
-	}, [ notice ] );
-
 	return (
 		<TabLayout
 			title={ libraryFontSelected?.name || '' }
@@ -115,9 +105,9 @@ function InstalledFonts() {
 					<FlexItem>
 						<Spacer margin={ 2 } />
 						<Notice
-							isDismissible={ false }
 							status={ notice.type }
 							className="font-library-modal__font-collection__notice"
+							onRemove={ () => setNotice( null ) }
 						>
 							{ notice.message }
 						</Notice>

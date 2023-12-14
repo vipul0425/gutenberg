@@ -6,7 +6,7 @@ import {
 	__experimentalText as Text,
 	__experimentalSpacer as Spacer,
 } from '@wordpress/components';
-import { useState, useEffect } from '@wordpress/element';
+import { Fragment, useState, useEffect } from '@wordpress/element';
 
 function FontsGrid( { title, children, pageSize = 32 } ) {
 	const [ lastItem, setLastItem ] = useState( null );
@@ -42,9 +42,13 @@ function FontsGrid( { title, children, pageSize = 32 } ) {
 				<div className="font-library-modal__fonts-grid__main">
 					{ items.map( ( child, i ) => {
 						if ( i === itemsLimit - 1 ) {
-							return <div ref={ setLastItem }>{ child }</div>;
+							return (
+								<div key={ i } ref={ setLastItem }>
+									{ child }
+								</div>
+							);
 						}
-						return child;
+						return <Fragment key={ i }>{ child }</Fragment>;
 					} ) }
 				</div>
 			</VStack>

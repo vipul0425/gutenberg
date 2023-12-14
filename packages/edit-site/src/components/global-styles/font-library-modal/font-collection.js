@@ -92,16 +92,6 @@ function FontCollection( { id } ) {
 		setNotice( null );
 	}, [ id ] );
 
-	// Reset notice after 5 seconds
-	useEffect( () => {
-		if ( notice && notice?.duration !== 0 ) {
-			const timeout = setTimeout( () => {
-				setNotice( null );
-			}, notice.duration ?? 5000 );
-			return () => clearTimeout( timeout );
-		}
-	}, [ notice ] );
-
 	const collectionFonts = useMemo(
 		() => selectedCollection?.data?.fontFamilies ?? [],
 		[ selectedCollection ]
@@ -184,9 +174,9 @@ function FontCollection( { id } ) {
 					<FlexItem>
 						<Spacer margin={ 2 } />
 						<Notice
-							isDismissible={ false }
 							status={ notice.type }
 							className="font-library-modal__font-collection__notice"
+							onRemove={ () => setNotice( null ) }
 						>
 							{ notice.message }
 						</Notice>

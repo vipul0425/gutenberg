@@ -77,7 +77,9 @@ function FontLibraryModal( {
 					<InstalledFonts />
 				</Tabs.TabPanel>
 				<Tabs.TabPanel tabId={ 'upload-fonts' }>
-					<UploadFonts />
+					<UploadFonts
+						onUpload={ () => setSelectedTab( 'installed-fonts' ) }
+					/>
 				</Tabs.TabPanel>
 				{ tabsFromCollections( collections || [] ).map( ( tab ) => (
 					<Tabs.TabPanel key={ tab.name } tabId={ tab.name }>
