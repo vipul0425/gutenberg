@@ -255,6 +255,9 @@ function add_default_navigation_overlay_template_part( $block_template, $id, $te
 	$template->origin         = null;
 	$template->author         = null;
 
+	// Set the area to match the Navigation Overlay area.
+	$template->area = 'navigation-overlay';
+
 	// The content is the default Navigation Overlay template part. This will only be used
 	// if the Theme does not provide a template part for the Navigation Overlay.
 	// PHP is used here to allow for translation of the default template part.
