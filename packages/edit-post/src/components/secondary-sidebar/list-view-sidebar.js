@@ -2,7 +2,10 @@
  * WordPress dependencies
  */
 import { __experimentalListView as ListView } from '@wordpress/block-editor';
-import { Button, TabPanel } from '@wordpress/components';
+import {
+	Button,
+	privateApis as componentsPrivateApis,
+} from '@wordpress/components';
 import { useFocusOnMount, useMergeRefs } from '@wordpress/compose';
 import { useDispatch } from '@wordpress/data';
 import { focus } from '@wordpress/dom';
@@ -17,6 +20,9 @@ import { ESCAPE } from '@wordpress/keycodes';
  */
 import { store as editPostStore } from '../../store';
 import ListViewOutline from './list-view-outline';
+import { unlock } from '../../lock-unlock';
+
+const { Tabs } = unlock( componentsPrivateApis );
 
 export default function ListViewSidebar( { listViewToggleElement } ) {
 	const { setIsListViewOpened } = useDispatch( editPostStore );
@@ -109,22 +115,6 @@ export default function ListViewSidebar( { listViewToggleElement } ) {
 		handleToggleListViewShortcut
 	);
 
-	/**
-	 * Render tab content for a given tab name.
-	 *
-	 * @param {string} tabName The name of the tab to render.
-	 */
-	function renderTabContent( tabName ) {
-		if ( tabName === 'list-view' ) {
-			return (
-				<div className="edit-post-editor__list-view-panel-content">
-					<ListView dropZoneElement={ dropZoneElement } />
-				</div>
-			);
-		}
-		return <ListViewOutline />;
-	}
-
 	return (
 		// eslint-disable-next-line jsx-a11y/no-static-element-interactions
 		<div
@@ -132,39 +122,44 @@ export default function ListViewSidebar( { listViewToggleElement } ) {
 			onKeyDown={ closeOnEscape }
 			ref={ sidebarRef }
 		>
-			<Button
-				className="edit-post-editor__document-overview-panel__close-button"
-				icon={ closeSmall }
-				label={ __( 'Close' ) }
-				onClick={ closeListView }
-			/>
-			<TabPanel
+			<div
 				className="edit-post-editor__document-overview-panel__tab-panel"
 				ref={ tabPanelRef }
-				onSelect={ ( tabName ) => setTab( tabName ) }
-				selectOnMove={ false }
-				tabs={ [
-					{
-						name: 'list-view',
-						title: _x( 'List View', 'Post overview' ),
-						className: 'edit-post-sidebar__panel-tab',
-					},
-					{
-						name: 'outline',
-						title: _x( 'Outline', 'Post overview' ),
-						className: 'edit-post-sidebar__panel-tab',
-					},
-				] }
 			>
-				{ ( currentTab ) => (
+				<Tabs
+					selectOnMove={ false }
+					onSelect={ ( tabName ) => setTab( tabName ) }
+				>
+					<Tabs.TabList>
+						<Tabs.Tab tabId="list-view">
+							{ _x( 'List View', 'Post overview' ) }
+						</Tabs.Tab>
+						<Tabs.Tab tabId="outline">
+							{ _x( 'Outline', 'Post overview' ) }
+						</Tabs.Tab>
+					</Tabs.TabList>
+					<Button
+						className="edit-post-editor__document-overview-panel__close-button"
+						icon={ closeSmall }
+						label={ __( 'Close' ) }
+						onClick={ closeListView }
+					/>
+
 					<div
 						className="edit-post-editor__list-view-container"
 						ref={ listViewContainerRef }
 					>
-						{ renderTabContent( currentTab.name ) }
+						<Tabs.TabPanel tabId="list-view" focusable={ false }>
+							<div className="edit-post-editor__list-view-panel-content">
+								<ListView dropZoneElement={ dropZoneElement } />
+							</div>
+						</Tabs.TabPanel>
+						<Tabs.TabPanel tabId="outline" focusable={ false }>
+							<ListViewOutline />
+						</Tabs.TabPanel>
 					</div>
-				) }
-			</TabPanel>
+				</Tabs>
+			</div>
 		</div>
 	);
 }
