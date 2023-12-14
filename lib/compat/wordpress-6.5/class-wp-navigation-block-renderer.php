@@ -513,6 +513,23 @@ class WP_Navigation_Block_Renderer {
 		);
 	}
 
+	private static function set_inner_nav_ref_recursive( $parsed, $ref ) {
+		$blocks = [];
+		foreach( $parsed as $block ) {
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$block['innerBlocks'] = static::set_inner_nav_ref_recursive( $block['innerBlocks'], $ref );
+			}
+			if ( 'core/navigation' === $block['blockName'] ) {
+				$block['attrs']['overlayMenu'] = "never";
+				if ( empty( $block['attrs']['ref'] ) && ! empty( $ref ) ) {
+					$block['attrs']['ref'] = $ref;
+				}
+			}
+			$blocks[] = $block;
+		}
+
+		return $blocks;
+	}
 
 	private static function get_custom_overlay_blocks_html( $attributes ) {
 		$theme                = get_stylesheet();
@@ -555,17 +572,10 @@ class WP_Navigation_Block_Renderer {
 
 		// Update the ref on the block
 		// if it doesn't have one, and turn off the overlay.
-		$blocks = [];
-		foreach( parse_blocks( $content ) as $block ) {
-			if ( 'core/navigation' === $block['blockName'] ) {
-				$block['attrs']['overlayMenu'] = "never";
-				if ( empty( $block['attrs']['ref'] ) && ! empty( $attributes['ref'] ) ) {
-					$block['attrs']['ref'] = $attributes['ref'];
-				}
-			}
-			$blocks[] = $block;
-		}
-		$content = serialize_blocks( $blocks );
+		$blocks = parse_blocks( $content );
+		$blocks_with_updated_ref = static::set_inner_nav_ref_recursive( $blocks, $attributes['ref'] );
+		$content = serialize_blocks( $blocks_with_updated_ref );
+
 		return do_blocks( $content );
 	}
 
