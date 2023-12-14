@@ -123,6 +123,7 @@ export default function EditOverlayButton( { navRef } ) {
 		<Button
 			aria-label={ __( 'Edit Overlay' ) }
 			variant="link"
+			className="wp-block-navigation__edit-overlay-button"
 			onClick={ handleEditOverlay }
 		>
 			{ __( 'Edit' ) }
