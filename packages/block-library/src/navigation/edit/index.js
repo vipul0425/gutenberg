@@ -44,6 +44,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { speak } from '@wordpress/a11y';
 import { close, Icon } from '@wordpress/icons';
 import { useInstanceId } from '@wordpress/compose';
+import { privateApis as routerPrivateApis } from '@wordpress/router';
 
 /**
  * Internal dependencies
@@ -78,6 +79,8 @@ import useIsWithinOverlay from './use-is-within-overlay';
 import useGoToOverlayEditor from './use-go-to-overlay-editor';
 import useOverlay from './use-overlay';
 
+const { useLocation } = unlock( routerPrivateApis );
+
 function Navigation( {
 	attributes,
 	setAttributes,
@@ -100,6 +103,10 @@ function Navigation( {
 	__unstableLayoutClassNames: layoutClassNames,
 } ) {
 	const {
+		params: { myNavRef },
+	} = useLocation();
+
+	const {
 		openSubmenusOnClick,
 		overlayMenu,
 		showSubmenuIcon,
@@ -113,13 +120,21 @@ function Navigation( {
 		icon = 'handle',
 	} = attributes;
 
-	const ref = attributes.ref;
+	const [ tempRef, setTempRef ] = useState( null );
+
+	const ref = tempRef || attributes.ref;
+
+	const isInheritRefMode = attributes.ref === 'inherit';
 
 	const setRef = useCallback(
 		( postId ) => {
-			setAttributes( { ref: postId } );
+			if ( isInheritRefMode ) {
+				setTempRef( Number( postId ) );
+			} else {
+				setAttributes( { ref: postId } );
+			}
 		},
-		[ setAttributes ]
+		[ setAttributes, isInheritRefMode, setTempRef ]
 	);
 
 	const recursionId = `navigationMenu/${ ref }`;
@@ -247,11 +262,21 @@ function Navigation( {
 		: null;
 
 	useEffect( () => {
+		// Todo: set the ref based on context.
+		if ( isInheritRefMode ) {
+			setRef( myNavRef );
+			return;
+		}
+
 		// If:
 		// - there is an existing menu, OR
 		// - there are existing (uncontrolled) inner blocks
 		// ...then don't request a fallback menu.
-		if ( ref || hasUnsavedBlocks || ! navigationFallbackId ) {
+		if (
+			( ref && ! isInheritRefMode ) ||
+			hasUnsavedBlocks ||
+			! navigationFallbackId
+		) {
 			return;
 		}
 
@@ -269,6 +294,8 @@ function Navigation( {
 		hasUnsavedBlocks,
 		navigationFallbackId,
 		__unstableMarkNextChangeAsNotPersistent,
+		isInheritRefMode,
+		myNavRef,
 	] );
 
 	const navRef = useRef();
@@ -765,6 +792,7 @@ function Navigation( {
 					onSelectNavigationMenu={ onSelectNavigationMenu }
 					isLoading={ isLoading }
 					blockEditingMode={ blockEditingMode }
+					isInheritRefMode={ isInheritRefMode }
 				/>
 				{ blockEditingMode === 'default' && stylingInspectorControls }
 				<ResponsiveWrapper
@@ -807,6 +835,7 @@ function Navigation( {
 					onSelectNavigationMenu={ onSelectNavigationMenu }
 					isLoading={ isLoading }
 					blockEditingMode={ blockEditingMode }
+					isInheritRefMode={ isInheritRefMode }
 				/>
 				<DeletedNavigationWarning
 					onCreateNew={ createUntitledEmptyNavigationMenu }
@@ -875,6 +904,7 @@ function Navigation( {
 					onSelectNavigationMenu={ onSelectNavigationMenu }
 					isLoading={ isLoading }
 					blockEditingMode={ blockEditingMode }
+					isInheritRefMode={ isInheritRefMode }
 				/>
 				{ blockEditingMode === 'default' && stylingInspectorControls }
 				{ blockEditingMode === 'default' && isEntityAvailable && (

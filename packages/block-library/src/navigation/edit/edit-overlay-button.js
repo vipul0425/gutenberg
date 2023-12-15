@@ -37,24 +37,6 @@ export default function EditOverlayButton( { navRef } ) {
 
 	const goToOverlayEditor = useGoToOverlayEditor();
 
-	function findNavigationBlock( blocks ) {
-		for ( const block of blocks ) {
-			if ( block.name === 'core/navigation' ) {
-				return block;
-			}
-
-			// If this block has inner blocks, recurse.
-			if ( block.innerBlocks.length ) {
-				const innerBlock = findNavigationBlock( block.innerBlocks );
-				if ( innerBlock ) {
-					return innerBlock;
-				}
-			}
-		}
-
-		return null;
-	}
-
 	async function handleEditOverlay( event ) {
 		event.preventDefault();
 
@@ -62,33 +44,23 @@ export default function EditOverlayButton( { navRef } ) {
 		// This might be a user created one, or one provided by the theme.
 		// If so, then go directly to the editor for that overlay template part.
 		if ( overlay ) {
-			goToOverlayEditor( overlay.id );
+			goToOverlayEditor( overlay.id, navRef );
 			return;
 		}
 
 		// If there is not overlay then create one using the base template part
 		// provided by Core.
 		// TODO: catch and handle errors.
-		const overlayBlocks = buildOverlayBlocks(
-			coreOverlay.content.raw,
-			navRef
-		);
+		const overlayBlocks = buildOverlayBlocks( coreOverlay.content.raw );
 
 		// The new overlay should use the current Theme's slug.
 		const newOverlay = await createOverlay( overlayBlocks );
 
-		goToOverlayEditor( newOverlay?.id );
+		goToOverlayEditor( newOverlay?.id, navRef );
 	}
 
-	function buildOverlayBlocks( content, parentNavRef ) {
+	function buildOverlayBlocks( content ) {
 		const parsedBlocks = parse( content );
-		const overlayNavBlock = findNavigationBlock( parsedBlocks );
-
-		// Update the Navigation block in the overlay to use
-		// the same ref as the parent block.
-		// Todo: what happens if ref doesn't exist?
-		// Should we copy the uncontrolled inner blocks?
-		overlayNavBlock.attributes.ref = parentNavRef;
 		return parsedBlocks;
 	}
 
