@@ -131,7 +131,7 @@ function Navigation( {
 
 	const showOverlayControls = ! isInsideOverlay;
 
-	const customOverlay = useOverlay( ref );
+	const customOverlay = useOverlay();
 	const goToOverlayEditor = useGoToOverlayEditor();
 
 	const hasCustomOverlay = !! customOverlay;
