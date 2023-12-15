@@ -76,7 +76,7 @@ import { unlock } from '../../lock-unlock';
 import EditOverlayButton from './edit-overlay-button';
 import useIsWithinOverlay from './use-is-within-overlay';
 import useGoToOverlayEditor from './use-go-to-overlay-editor';
-import useCustomOverlay from './use-custom-overlay';
+import useOverlay from './use-overlay';
 
 function Navigation( {
 	attributes,
@@ -131,7 +131,7 @@ function Navigation( {
 
 	const showOverlayControls = ! isInsideOverlay;
 
-	const customOverlay = useCustomOverlay( ref );
+	const customOverlay = useOverlay( ref );
 	const goToOverlayEditor = useGoToOverlayEditor();
 
 	const hasCustomOverlay = !! customOverlay;
