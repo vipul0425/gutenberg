@@ -4,6 +4,6 @@
 <!-- /wp:group -->
 
 <!-- wp:group {"metadata":{"name":"<?php echo __('Contents'); ?>"},"align":"wide","style":{"spacing":{"blockGap":"var:preset|spacing|30"}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"right"}} -->
-<div class="wp-block-group alignwide"><!-- wp:navigation {"overlayMenu":"never","align":"wide","layout":{"type":"flex","orientation":"vertical","justifyContent":"right"}} /--></div>
+<div class="wp-block-group alignwide"><!-- wp:navigation {"ref":"inherit","overlayMenu":"never","align":"wide","layout":{"type":"flex","orientation":"vertical","justifyContent":"right"}} /--></div>
 <!-- /wp:group --></div>
 <!-- /wp:group -->

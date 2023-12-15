@@ -521,7 +521,7 @@ class WP_Navigation_Block_Renderer {
 			}
 			if ( 'core/navigation' === $block['blockName'] ) {
 				$block['attrs']['overlayMenu'] = "never";
-				if ( empty( $block['attrs']['ref'] ) && ! empty( $ref ) ) {
+				if ( $block['attrs']['ref'] === 'inherit' && ! empty( $ref ) ) {
 					$block['attrs']['ref'] = $ref;
 				}
 			}
