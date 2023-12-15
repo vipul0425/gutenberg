@@ -533,12 +533,14 @@ class WP_Navigation_Block_Renderer {
 
 	private static function get_custom_overlay_blocks_html( $attributes ) {
 		$theme                = get_stylesheet();
-		$custom_overlay_id    = $theme . '//' . 'navigation-overlay';
+		// variable not used!
+		$custom_overlay_id = $theme . '//' . 'navigation-overlay';
+		$post_name = $attributes['overlayId'] ? explode( '//', $attributes['overlayId'] )[1] : array( 'navigation-overlay' );
 		$custom_overlay_query = new WP_Query(
 			array(
 				'post_type'           => 'wp_template_part',
 				'post_status'         => 'publish',
-				'post_name__in'       => array( 'navigation-overlay' ),
+				'post_name'           => $post_name,
 				'tax_query'           => array(
 					array(
 						'taxonomy' => 'wp_theme',
@@ -549,10 +551,11 @@ class WP_Navigation_Block_Renderer {
 				'posts_per_page'      => 1,
 				'no_found_rows'       => true,
 				'lazy_load_term_meta' => false, // Do not lazy load term meta, as template parts only have one term.
+				'exact'               => true,
 			)
 		);
-		$custom_overlay_post = $custom_overlay_query->have_posts() ? $custom_overlay_query->next_post() : null;
 
+		$custom_overlay_post = $custom_overlay_query->have_posts() ? $custom_overlay_query->next_post() : null;
 		if ( empty( $custom_overlay_post ) ) {
 			// Get from the theme
 			$overlay_template_parts = get_block_templates(
