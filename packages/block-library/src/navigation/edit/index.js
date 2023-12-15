@@ -146,7 +146,7 @@ function Navigation( {
 
 	const showOverlayControls = ! isInsideOverlay;
 
-	const customOverlay = useOverlay();
+	const customOverlay = useOverlay( attributes?.overlayId );
 	const goToOverlayEditor = useGoToOverlayEditor();
 
 	const hasCustomOverlay = !! customOverlay;
@@ -403,7 +403,7 @@ function Navigation( {
 		if ( hasCustomOverlay && _toggleVal ) {
 			// If there is a Custom Overlay and the user is trying to open the menu
 			// then edit the overlay template part.
-			goToOverlayEditor( customOverlay?.id );
+			goToOverlayEditor( customOverlay?.id, ref );
 		} else {
 			// Otherwise just toggle the default overlay witin the editor.
 			setResponsiveMenuVisibility( _toggleVal );
@@ -626,7 +626,11 @@ function Navigation( {
 										{ __( 'Overlay Menu' ) }
 									</h3>
 									{ isResponsive && (
-										<EditOverlayButton navRef={ ref } />
+										<EditOverlayButton
+											attributes={ attributes }
+											setAttributes={ setAttributes }
+											navRef={ ref }
+										/>
 									) }
 								</HStack>
 								<ToggleGroupControl

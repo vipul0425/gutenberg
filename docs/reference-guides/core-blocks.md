@@ -461,7 +461,7 @@ A collection of blocks that allow visitors to get around your site. ([Source](ht
 -	**Name:** core/navigation
 -	**Category:** theme
 -	**Supports:** align (full, wide), ariaLabel, inserter, interactivity, layout (allowSizingOnChildren, default, ~~allowInheriting~~, ~~allowSwitching~~, ~~allowVerticalAlignment~~), spacing (blockGap, units), typography (fontSize, lineHeight), ~~html~~, ~~renaming~~
--	**Attributes:** __unstableLocation, backgroundColor, customBackgroundColor, customOverlayBackgroundColor, customOverlayTextColor, customTextColor, hasIcon, icon, maxNestingLevel, openSubmenusOnClick, overlayBackgroundColor, overlayMenu, overlayTextColor, ref, rgbBackgroundColor, rgbTextColor, showSubmenuIcon, templateLock, textColor
+-	**Attributes:** __unstableLocation, backgroundColor, customBackgroundColor, customOverlayBackgroundColor, customOverlayTextColor, customTextColor, hasIcon, icon, maxNestingLevel, openSubmenusOnClick, overlayBackgroundColor, overlayId, overlayMenu, overlayTextColor, ref, rgbBackgroundColor, rgbTextColor, showSubmenuIcon, templateLock, textColor
 
 ## Custom Link
 
