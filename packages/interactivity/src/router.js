@@ -82,7 +82,7 @@ export const prefetch = ( url, options = {} ) => {
 };
 
 // Render all interactive regions contained in the given page.
-const renderRegions = ( page ) =>
+const renderRegions = ( page ) => {
 	batch( () => {
 		Object.entries( page.state ).forEach( ( [ ns, state ] ) => {
 			deepMerge( stores.get( ns ).state, state );
@@ -97,6 +97,7 @@ const renderRegions = ( page ) =>
 			document.title = page.title;
 		}
 	} );
+};
 
 // Variable to store the current navigation.
 let navigatingTo = '';
