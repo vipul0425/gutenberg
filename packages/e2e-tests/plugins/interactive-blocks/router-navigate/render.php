@@ -8,6 +8,10 @@
  */
 
 gutenberg_enqueue_module( 'router-navigate-view' );
+
+if ( isset( $attributes['data'] ) ) {
+	$initial_state = array( 'router' => array( 'data' => $attributes['data'] ) );
+}
 ?>
 
 <div
@@ -58,5 +62,5 @@ HTML;
 </div>
 
 <script type="application/json" id="wp-interactivity-initial-state">
-	{ "router": { "data": <?php echo json_encode( $attributes['state'] ); ?> } }
+	<?php echo isset( $initial_state ) ? json_encode( $initial_state ) : '{}'; ?>
 </script>
