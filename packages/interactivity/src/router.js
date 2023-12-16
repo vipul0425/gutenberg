@@ -2,12 +2,14 @@
  * External dependencies
  */
 import { hydrate, render } from 'preact';
+import { batch } from '@preact/signals';
 /**
  * Internal dependencies
  */
 import { toVdom, hydratedIslands } from './vdom';
 import { createRootFragment } from './utils';
 import { directivePrefix } from './constants';
+import { parseInitialState, stores, deepMerge } from './store';
 
 // The cache of visited and prefetched pages.
 const pages = new Map();
@@ -56,7 +58,8 @@ const regionsToVdom = ( dom ) => {
 		regions[ id ] = toVdom( region );
 	} );
 	const title = dom.querySelector( 'title' )?.innerText;
-	return { regions, title };
+	const state = parseInitialState( dom );
+	return { regions, title, state };
 };
 
 /**
@@ -79,17 +82,21 @@ export const prefetch = ( url, options = {} ) => {
 };
 
 // Render all interactive regions contained in the given page.
-const renderRegions = ( page ) => {
-	const attrName = `data-${ directivePrefix }-navigation-id`;
-	document.querySelectorAll( `[${ attrName }]` ).forEach( ( region ) => {
-		const id = region.getAttribute( attrName );
-		const fragment = getRegionRootFragment( region );
-		render( page.regions[ id ], fragment );
+const renderRegions = ( page ) =>
+	batch( () => {
+		Object.entries( page.state ).forEach( ( [ ns, state ] ) => {
+			deepMerge( stores.get( ns ).state, state );
+		} );
+		const attrName = `data-${ directivePrefix }-navigation-id`;
+		document.querySelectorAll( `[${ attrName }]` ).forEach( ( region ) => {
+			const id = region.getAttribute( attrName );
+			const fragment = getRegionRootFragment( region );
+			render( page.regions[ id ], fragment );
+		} );
+		if ( page.title ) {
+			document.title = page.title;
+		}
 	} );
-	if ( page.title ) {
-		document.title = page.title;
-	}
-};
 
 // Variable to store the current navigation.
 let navigatingTo = '';

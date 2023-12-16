@@ -18,7 +18,7 @@ import {
 const isObject = ( item: unknown ): boolean =>
 	!! item && typeof item === 'object' && ! Array.isArray( item );
 
-const deepMerge = ( target: any, source: any ) => {
+export const deepMerge = ( target: any, source: any ) => {
 	if ( isObject( target ) && isObject( source ) ) {
 		for ( const key in source ) {
 			const getter = Object.getOwnPropertyDescriptor( source, key )?.get;
@@ -34,8 +34,8 @@ const deepMerge = ( target: any, source: any ) => {
 	}
 };
 
-const parseInitialState = () => {
-	const storeTag = document.querySelector(
+export const parseInitialState = ( dom = document ) => {
+	const storeTag = dom.querySelector(
 		`script[type="application/json"]#wp-interactivity-initial-state`
 	);
 	if ( ! storeTag?.textContent ) return {};
