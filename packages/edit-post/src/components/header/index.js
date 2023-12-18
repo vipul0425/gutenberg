@@ -30,6 +30,7 @@ import {
 	Popover,
 } from '@wordpress/components';
 import { store as preferencesStore } from '@wordpress/preferences';
+import { getQueryArg } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -86,7 +87,8 @@ function Header( { setEntitiesSavedStatesCallback } ) {
 	}, [] );
 
 	const hasDocumentBar =
-		POST_TYPE_EDITOR_INTERFACE[ postType ]?.hasDocumentBar;
+		POST_TYPE_EDITOR_INTERFACE[ postType ]?.hasDocumentBar &&
+		getQueryArg( window.location.href, 'editMode' ) === 'focused';
 	const [ isBlockToolsCollapsed, setIsBlockToolsCollapsed ] =
 		useState( true );
 
