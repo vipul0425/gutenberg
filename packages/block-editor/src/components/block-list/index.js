@@ -135,10 +135,31 @@ function Items( {
 				getSelectedBlockClientIds,
 				__unstableGetVisibleBlocks,
 			} = select( blockEditorStore );
+			const _order = getBlockOrder( rootClientId );
+			const _selectedBlocks = getSelectedBlockClientIds();
+			const _visibleBlocks = __unstableGetVisibleBlocks();
+			let hasSelectedBlocks = false;
+			let hasVisibleBlocks = false;
+			for ( const clientId of _order ) {
+				if (
+					! hasSelectedBlocks &&
+					_selectedBlocks.includes( clientId )
+				) {
+					hasSelectedBlocks = true;
+				}
+
+				if ( ! hasVisibleBlocks && _visibleBlocks.has( clientId ) ) {
+					hasVisibleBlocks = true;
+				}
+
+				if ( hasSelectedBlocks && hasVisibleBlocks ) {
+					break;
+				}
+			}
 			return {
-				order: getBlockOrder( rootClientId ),
-				selectedBlocks: getSelectedBlockClientIds(),
-				visibleBlocks: __unstableGetVisibleBlocks(),
+				order: _order,
+				selectedBlocks: hasSelectedBlocks ? _selectedBlocks : null,
+				visibleBlocks: hasVisibleBlocks ? _visibleBlocks : null,
 			};
 		},
 		[ rootClientId ]
@@ -152,8 +173,8 @@ function Items( {
 					value={
 						// Only provide data asynchronously if the block is
 						// not visible and not selected.
-						! visibleBlocks.has( clientId ) &&
-						! selectedBlocks.includes( clientId )
+						! visibleBlocks?.has( clientId ) &&
+						! selectedBlocks?.includes( clientId )
 					}
 				>
 					<BlockListBlock
