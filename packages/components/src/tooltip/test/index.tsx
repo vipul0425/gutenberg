@@ -210,8 +210,11 @@ describe( 'Tooltip', () => {
 		expect( onMouseLeaveMock ).toHaveBeenCalledTimes( 1 );
 
 		// Advance time again, so that we reach the full TOOLTIP_DELAY time
-		await new Promise( ( resolve ) =>
-			setTimeout( resolve, TOOLTIP_DELAY )
+		await waitFor(
+			async () =>
+				await new Promise( ( resolve ) =>
+					setTimeout( resolve, TOOLTIP_DELAY )
+				)
 		);
 
 		// Tooltip won't show, since the mouse has left the tooltip anchor
