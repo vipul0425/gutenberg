@@ -96,7 +96,7 @@ export default function Image( {
 	temporaryURL,
 	attributes,
 	setAttributes,
-	isSelected,
+	isSingleSelected,
 	insertBlocksAfter,
 	onReplace,
 	onSelectImage,
@@ -134,26 +134,12 @@ export default function Image( {
 	const { allowResize = true } = context;
 	const { getBlock } = useSelect( blockEditorStore );
 
-	const { image, multiImageSelection } = useSelect(
-		( select ) => {
-			const { getMedia } = select( coreStore );
-			const { getMultiSelectedBlockClientIds, getBlockName } =
-				select( blockEditorStore );
-			const multiSelectedClientIds = getMultiSelectedBlockClientIds();
-			return {
-				image:
-					id && isSelected
-						? getMedia( id, { context: 'view' } )
-						: null,
-				multiImageSelection:
-					multiSelectedClientIds.length &&
-					multiSelectedClientIds.every(
-						( _clientId ) =>
-							getBlockName( _clientId ) === 'core/image'
-					),
-			};
-		},
-		[ id, isSelected ]
+	const image = useSelect(
+		( select ) =>
+			id && isSingleSelected
+				? select( coreStore ).getMedia( id, { context: 'view' } )
+				: null,
+		[ id, isSingleSelected ]
 	);
 	const { canInsertCover, imageEditing, imageSizes, maxWidth, mediaUpload } =
 		useSelect(
@@ -212,7 +198,7 @@ export default function Image( {
 	useEffect( () => {
 		if (
 			! isExternalImage( id, url ) ||
-			! isSelected ||
+			! isSingleSelected ||
 			! canUploadMedia
 		) {
 			setExternalBlob();
@@ -228,7 +214,7 @@ export default function Image( {
 			.then( ( blob ) => setExternalBlob( blob ) )
 			// Do nothing, cannot upload.
 			.catch( () => {} );
-	}, [ id, url, isSelected, externalBlob, canUploadMedia ] );
+	}, [ id, url, isSingleSelected, externalBlob, canUploadMedia ] );
 
 	// Get naturalWidth and naturalHeight from image ref, and fall back to loaded natural
 	// width and height. This resolves an issue in Safari where the loaded natural
@@ -318,13 +304,13 @@ export default function Image( {
 	}
 
 	useEffect( () => {
-		if ( ! isSelected ) {
+		if ( ! isSingleSelected ) {
 			setIsEditingImage( false );
 		}
-	}, [ isSelected ] );
+	}, [ isSingleSelected ] );
 
 	const canEditImage = id && naturalWidth && naturalHeight && imageEditing;
-	const allowCrop = ! multiImageSelection && canEditImage && ! isEditingImage;
+	const allowCrop = isSingleSelected && canEditImage && ! isEditingImage;
 
 	function switchToCover() {
 		replaceBlocks(
@@ -406,7 +392,7 @@ export default function Image( {
 	const controls = (
 		<>
 			<BlockControls group="block">
-				{ ! multiImageSelection && ! isEditingImage && (
+				{ isSingleSelected && ! isEditingImage && (
 					<ImageURLInputUI
 						url={ href || '' }
 						onChangeUrl={ onSetHref }
@@ -425,7 +411,7 @@ export default function Image( {
 						label={ __( 'Crop' ) }
 					/>
 				) }
-				{ ! multiImageSelection && canInsertCover && (
+				{ isSingleSelected && canInsertCover && (
 					<ToolbarButton
 						icon={ overlayText }
 						label={ __( 'Add text over image' ) }
@@ -433,7 +419,7 @@ export default function Image( {
 					/>
 				) }
 			</BlockControls>
-			{ ! multiImageSelection && ! isEditingImage && (
+			{ isSingleSelected && ! isEditingImage && (
 				<BlockControls group="other">
 					<MediaReplaceFlow
 						mediaId={ id }
@@ -446,7 +432,7 @@ export default function Image( {
 					/>
 				</BlockControls>
 			) }
-			{ ! multiImageSelection && externalBlob && (
+			{ isSingleSelected && externalBlob && (
 				<BlockControls>
 					<ToolbarGroup>
 						<ToolbarButton
@@ -463,7 +449,7 @@ export default function Image( {
 					resetAll={ resetAll }
 					dropdownMenuProps={ TOOLSPANEL_DROPDOWNMENU_PROPS }
 				>
-					{ ! multiImageSelection && (
+					{ isSingleSelected && (
 						<ToolsPanelItem
 							label={ __( 'Alternative text' ) }
 							isShownByDefault={ true }
@@ -704,7 +690,7 @@ export default function Image( {
 					width: currentWidth ?? 'auto',
 					height: currentHeight ?? 'auto',
 				} }
-				showHandle={ isSelected }
+				showHandle={ isSingleSelected }
 				minWidth={ minWidth }
 				maxWidth={ maxWidthBuffer }
 				minHeight={ minHeight }
@@ -752,7 +738,7 @@ export default function Image( {
 			<Caption
 				attributes={ attributes }
 				setAttributes={ setAttributes }
-				isSelected={ isSelected }
+				isSelected={ isSingleSelected }
 				insertBlocksAfter={ insertBlocksAfter }
 				label={ __( 'Image caption text' ) }
 				showToolbarButton={ hasNonContentControls }
