@@ -7,7 +7,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { useCallback, useMemo, useState } from '@wordpress/element';
+import { memo, useCallback, useMemo, useState } from '@wordpress/element';
 import {
 	GlobalStylesContext,
 	getMergedGlobalStyles,
@@ -29,7 +29,7 @@ import {
 	withDispatch,
 	withSelect,
 } from '@wordpress/data';
-import { compose, ifCondition, pure } from '@wordpress/compose';
+import { compose, ifCondition } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -663,7 +663,7 @@ const applyWithDispatch = withDispatch( ( dispatch, ownProps, registry ) => {
 } );
 
 export default compose(
-	pure,
+	memo,
 	applyWithSelect,
 	applyWithDispatch,
 	// Block is sometimes not mounted at the right time, causing it be undefined
