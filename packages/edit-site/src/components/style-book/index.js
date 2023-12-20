@@ -8,7 +8,6 @@ import classnames from 'classnames';
  */
 import {
 	Disabled,
-	TabPanel,
 	privateApis as componentsPrivateApis,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
@@ -44,6 +43,7 @@ const {
 	CompositeV2: Composite,
 	CompositeItemV2: CompositeItem,
 	useCompositeStoreV2: useCompositeStore,
+	Tabs,
 } = unlock( componentsPrivateApis );
 
 // The content area of the Style Book is rendered within an iframe so that global styles
@@ -224,22 +224,36 @@ function StyleBook( {
 			>
 				{ resizeObserver }
 				{ showTabs ? (
-					<TabPanel
-						className="edit-site-style-book__tab-panel"
-						tabs={ tabs }
-					>
-						{ ( tab ) => (
-							<StyleBookBody
-								category={ tab.name }
-								examples={ examples }
-								isSelected={ isSelected }
-								onSelect={ onSelect }
-								settings={ settings }
-								sizes={ sizes }
-								title={ tab.title }
-							/>
-						) }
-					</TabPanel>
+					<div className="edit-site-style-book__tabs">
+						<Tabs>
+							<Tabs.TabList>
+								{ tabs.map( ( tab ) => (
+									<Tabs.Tab
+										tabId={ tab.name }
+										key={ tab.name }
+									>
+										{ tab.title }
+									</Tabs.Tab>
+								) ) }
+							</Tabs.TabList>
+							{ tabs.map( ( tab ) => (
+								<Tabs.TabPanel
+									key={ tab.name }
+									tabId={ tab.name }
+								>
+									<StyleBookBody
+										category={ tab.name }
+										examples={ examples }
+										isSelected={ isSelected }
+										onSelect={ onSelect }
+										settings={ settings }
+										sizes={ sizes }
+										title={ tab.title }
+									/>
+								</Tabs.TabPanel>
+							) ) }
+						</Tabs>
+					</div>
 				) : (
 					<StyleBookBody
 						examples={ examples }
