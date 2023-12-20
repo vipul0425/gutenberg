@@ -46,6 +46,7 @@ export interface Style {
 		left?: BorderIndividualStyles< 'left' >;
 	};
 	dimensions?: {
+		aspectRatio?: CSSProperties[ 'aspectRatio' ];
 		minHeight?: CSSProperties[ 'minHeight' ];
 	};
 	spacing?: {
