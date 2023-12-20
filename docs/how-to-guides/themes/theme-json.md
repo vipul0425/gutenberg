@@ -259,6 +259,7 @@ The settings section has the following structure:
 		},
 		"custom": {},
 		"dimensions": {
+			"aspectRatio": false,
 			"minHeight": false,
 		},
 		"layout": {
@@ -799,6 +800,7 @@ Each block declares which style properties it exposes via the [block supports me
 			"text": "value"
 		},
 		"dimensions": {
+			"aspectRatio": "value",
 			"minHeight": "value"
 		},
 		"filter": {
