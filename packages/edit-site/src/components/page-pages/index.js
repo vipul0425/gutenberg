@@ -5,7 +5,7 @@ import {
 	__experimentalView as View,
 	__experimentalVStack as VStack,
 } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useEntityRecords, store as coreStore } from '@wordpress/core-data';
 import { decodeEntities } from '@wordpress/html-entities';
 import { useState, useMemo, useCallback, useEffect } from '@wordpress/element';
@@ -342,6 +342,22 @@ export default function PagePages() {
 					onChangeView={ onChangeView }
 					onSelectionChange={ onSelectionChange }
 					deferredRendering={ false }
+					labels={ {
+						getSelectLabel: ( item ) => {
+							return sprintf(
+								// translators: %s: The title of the page.
+								__( 'Select page: %s' ),
+								item.title?.rendered || item.slug
+							);
+						},
+						getDeselectLabel: ( item ) => {
+							return sprintf(
+								// translators: %s: The title of the page.
+								__( 'Deselect page: %s' ),
+								item.title?.rendered || item.slug
+							);
+						},
+					} }
 				/>
 			</Page>
 			{ view.type === LAYOUT_LIST && (

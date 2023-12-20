@@ -14,7 +14,8 @@ import Pagination from './pagination';
 import ViewActions from './view-actions';
 import Filters from './filters';
 import Search from './search';
-import { VIEW_LAYOUTS } from './constants';
+import { VIEW_LAYOUTS, LAYOUT_TABLE } from './constants';
+import BulkActions from './bulk-actions';
 
 export default function DataViews( {
 	view,
@@ -30,6 +31,7 @@ export default function DataViews( {
 	supportedLayouts,
 	onSelectionChange,
 	deferredRendering,
+	labels,
 } ) {
 	const [ selection, setSelection ] = useState( [] );
 
@@ -55,6 +57,15 @@ export default function DataViews( {
 					className="dataviews__filters-view-actions"
 				>
 					<HStack justify="start" wrap>
+						{ view.type === LAYOUT_TABLE && (
+							<BulkActions
+								actions={ actions }
+								data={ data }
+								onSelectionChange={ onSetSelection }
+								selection={ selection }
+								getItemId={ getItemId }
+							/>
+						) }
 						{ search && (
 							<Search
 								label={ searchLabel }
@@ -87,6 +98,7 @@ export default function DataViews( {
 					onSelectionChange={ onSetSelection }
 					selection={ selection }
 					deferredRendering={ deferredRendering }
+					labels={ labels }
 				/>
 				<Pagination
 					view={ view }
