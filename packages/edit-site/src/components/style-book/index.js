@@ -240,6 +240,7 @@ function StyleBook( {
 								<Tabs.TabPanel
 									key={ tab.name }
 									tabId={ tab.name }
+									focusable={ false }
 								>
 									<StyleBookBody
 										category={ tab.name }
