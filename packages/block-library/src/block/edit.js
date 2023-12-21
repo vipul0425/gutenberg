@@ -164,7 +164,7 @@ export default function ReusableBlockEdit( {
 		setBlockEditingMode,
 	} = useDispatch( blockEditorStore );
 
-	const { innerBlocks, userCanEdit, getBlockEditingMode, onSelectPost } =
+	const { innerBlocks, userCanEdit, getBlockEditingMode, getPostLinkProps } =
 		useSelect(
 			( select ) => {
 				const { canUser } = select( coreStore );
@@ -181,14 +181,15 @@ export default function ReusableBlockEdit( {
 					innerBlocks: blocks,
 					userCanEdit: canEdit,
 					getBlockEditingMode: editingMode,
-					onSelectPost: getSettings().__experimentalOnSelectPost,
+					getPostLinkProps:
+						getSettings().__experimentalGetPostLinkProps,
 				};
 			},
 			[ patternClientId, ref ]
 		);
 
-	const editOriginalProps = onSelectPost
-		? onSelectPost( {
+	const editOriginalProps = getPostLinkProps
+		? getPostLinkProps( {
 				postId: ref,
 				postType: 'wp_block',
 				canvas: 'edit',
