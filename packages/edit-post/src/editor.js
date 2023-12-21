@@ -166,7 +166,6 @@ function Editor( {
 		isDistractionFree,
 		hasInlineToolbar,
 		allowRightClickOverrides,
-		setIsInserterOpened,
 		keepCaretInsideBlock,
 		hiddenBlockTypes,
 		blockTypes,
