@@ -29,7 +29,6 @@ import {
 	Popover,
 } from '@wordpress/components';
 import { store as preferencesStore } from '@wordpress/preferences';
-import { getQueryArg } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -67,13 +66,16 @@ function Header( { setEntitiesSavedStatesCallback } ) {
 		isEditingTemplate,
 		isPublishSidebarOpened,
 		showIconLabels,
+		hasHistory,
 	} = useSelect( ( select ) => {
 		const { get: getPreference } = select( preferencesStore );
 		return {
 			hasBlockSelection:
 				!! select( blockEditorStore ).getBlockSelectionStart(),
 			hasActiveMetaboxes: select( editPostStore ).hasMetaBoxes(),
-
+			hasHistory:
+				select( editorStore ).getEditorSettings().postHistory?.length >
+				0,
 			isEditingTemplate:
 				select( editorStore ).getRenderingMode() === 'template-only',
 			isPublishSidebarOpened:
@@ -156,7 +158,7 @@ function Header( { setEntitiesSavedStatesCallback } ) {
 							isLargeViewport,
 					} ) }
 				>
-					{ isEditingTemplate && <DocumentBar /> }
+					{ ( isEditingTemplate || hasHistory ) && <DocumentBar /> }
 				</div>
 			</motion.div>
 			<motion.div
