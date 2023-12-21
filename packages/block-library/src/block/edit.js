@@ -147,7 +147,6 @@ export default function ReusableBlockEdit( {
 	attributes: { ref, overrides },
 	__unstableParentLayout: parentLayout,
 	clientId: patternClientId,
-	editOriginalPattern,
 } ) {
 	const registry = useRegistry();
 	const hasAlreadyRendered = useHasRecursion( ref );
@@ -165,23 +164,36 @@ export default function ReusableBlockEdit( {
 		setBlockEditingMode,
 	} = useDispatch( blockEditorStore );
 
-	const { innerBlocks, userCanEdit, getBlockEditingMode } = useSelect(
-		( select ) => {
-			const { canUser } = select( coreStore );
-			const { getBlocks, getBlockEditingMode: editingMode } =
-				select( blockEditorStore );
-			const blocks = getBlocks( patternClientId );
-			const canEdit = canUser( 'update', 'blocks', ref );
+	const { innerBlocks, userCanEdit, getBlockEditingMode, onSelectPost } =
+		useSelect(
+			( select ) => {
+				const { canUser } = select( coreStore );
+				const {
+					getBlocks,
+					getBlockEditingMode: editingMode,
+					getSettings,
+				} = select( blockEditorStore );
+				const blocks = getBlocks( patternClientId );
+				const canEdit = canUser( 'update', 'blocks', ref );
 
-			// For editing link to the site editor if the theme and user permissions support it.
-			return {
-				innerBlocks: blocks,
-				userCanEdit: canEdit,
-				getBlockEditingMode: editingMode,
-			};
-		},
-		[ patternClientId, ref ]
-	);
+				// For editing link to the site editor if the theme and user permissions support it.
+				return {
+					innerBlocks: blocks,
+					userCanEdit: canEdit,
+					getBlockEditingMode: editingMode,
+					onSelectPost: getSettings().__experimentalOnSelectPost,
+				};
+			},
+			[ patternClientId, ref ]
+		);
+
+	const editOriginalProps = onSelectPost
+		? onSelectPost( {
+				postId: ref,
+				postType: 'wp_block',
+				canvas: 'edit',
+		  } )
+		: {};
 
 	useEffect(
 		() => setBlockEditMode( setBlockEditingMode, innerBlocks ),
@@ -293,14 +305,10 @@ export default function ReusableBlockEdit( {
 
 	return (
 		<RecursionProvider uniqueId={ ref }>
-			{ userCanEdit && editOriginalPattern && (
+			{ userCanEdit && editOriginalProps && (
 				<BlockControls>
 					<ToolbarGroup>
-						<ToolbarButton
-							onClick={ () =>
-								editOriginalPattern( ref, 'wp_block' )
-							}
-						>
+						<ToolbarButton { ...editOriginalProps }>
 							{ __( 'Edit original' ) }
 						</ToolbarButton>
 					</ToolbarGroup>
