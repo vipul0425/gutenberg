@@ -167,16 +167,6 @@ if ( $gutenberg_experiments && (
 
 		// Add filter only to the blocks in the list.
 		foreach ( $block_bindings_allowed_blocks as $block_name => $attributes ) {
-			// if ( ! function_exists( 'process_block_bindings' ) ) {
-			//  function filter_metadata_registration( $metadata ) {
-			//      var_dump( $metadata );
-			//      die;
-			//      $metadata['usesContext'] = array( 'postId', 'postType', 'queryId' );
-			//      return $metadata;
-			//  }
-			//  add_filter( 'block_type_metadata', 'filter_metadata_registration' );
-			// }
-
 			add_filter( 'render_block_' . $block_name, 'process_block_bindings', 20, 3 );
 		}
 	}
