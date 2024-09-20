@@ -101,7 +101,8 @@ const ModifiedWarning = ( { originalBlock, ...props } ) => {
 		);
 		actions.push(
 			<Button
-				__next40pxDefaultSize
+				// TODO: Switch to `true` (40px size) if possible
+				__next40pxDefaultSize={ false }
 				key="convert"
 				onClick={ convertToHTML }
 				variant="tertiary"
